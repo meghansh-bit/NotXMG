@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>NOTXMG — YouTube</title>
+  <meta name="description" content="NOTXMG YouTube feed — latest videos and shorts (lazy-loaded).">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="theme-dark">
+  <header class="site-header">
+    <div class="container nav-row">
+      <a class="logo" href="/index.html">NOTXMG</a>
+      <nav class="nav">
+        <a href="/index.html">Home</a>
+        <a href="/portfolio.html">Portfolio</a>
+        <a href="/projects.html">Projects</a>
+      </nav>
+      <button class="nav-toggle" aria-label="Open menu">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero small">
+      <div class="water-surface"></div>
+      <div class="container hero-inner">
+        <h1 class="title-animate">NOTXMG — YouTube</h1>
+        <p class="subtitle">Channel feed and Shorts — lazy-loaded. <a href="https://youtube.com/@notx_mg" target="_blank" rel="noopener">Visit channel</a></p>
+      </div>
+    </section>
+
+    <section class="container youtube-section">
+      <div id="youtube-root">
+        <p class="muted">Loading videos…</p>
+      </div>
+      <p class="muted small">Videos are loaded lazily. The site is ready to be wired to the YouTube Data API later (see README).</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year-youtube"></span> NOTXMG</p>
+      <nav class="footer-nav">
+        <a href="/index.html">Home</a>
+        <a href="/portfolio.html">Portfolio</a>
+        <a href="/projects.html">Projects</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="/script.js" defer></script>
+  <script>
+    // Client-side data loader — attempts a modular feed endpoint first, then a local placeholder.
+    (function(){
+      const root = document.getElementById('youtube-root');
+      const renderEmpty = () => {
+        root.innerHTML = '<div class="center muted small">No videos available. Connect a YouTube data source or add items to <code>/data/videos.json</code>.</div>';
+      }
+
+      function renderGrid(videos){
+        if(!videos || videos.length===0) return renderEmpty();
+        const grid = document.createElement('div');
+        grid.className = 'projects-grid';
+        videos.forEach(v => {
+          const card = document.createElement('article');
+          card.className = 'project-card youtube-card parallax';
+
+          const thumbWrap = document.createElement('div');
+          thumbWrap.className = 'project-media';
+          const img = document.createElement('img');
+          img.alt = v.title || 'YouTube video';
+          img.loading = 'lazy';
+          img.src = v.thumbnail || ('https://i.ytimg.com/vi/'+(v.videoId||'')+'/hqdefault.jpg');
+          thumbWrap.appendChild(img);
+
+          const body = document.createElement('div');
+          body.className = 'project-body';
+          const h3 = document.createElement('h3');
+          h3.textContent = v.title || 'Untitled';
+          const p = document.createElement('p');
+          p.className = 'muted';
+          p.textContent = v.publishedAt ? new Date(v.publishedAt).toLocaleString() : '';
+
+          const actions = document.createElement('div');
+          actions.className = 'project-actions';
+          const play = document.createElement('button');
+          play.className = 'btn';
+          play.textContent = 'Play';
+          play.addEventListener('click', () => {
+            // Replace thumbnail with official YouTube embed (lazy load)
+            const iframe = document.createElement('iframe');
+            iframe.width = '100%';
+            iframe.height = '360';
+            iframe.src = 'https://www.youtube.com/embed/'+v.videoId+'?rel=0&modestbranding=1';
+            iframe.frameBorder = '0';
+            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+            iframe.allowFullscreen = true;
+            thumbWrap.innerHTML = '';
+            thumbWrap.appendChild(iframe);
+          });
+
+          actions.appendChild(play);
+          body.appendChild(h3); body.appendChild(p); body.appendChild(actions);
+
+          card.appendChild(thumbWrap); card.appendChild(body);
+          grid.appendChild(card);
+        });
+        root.innerHTML = '';
+        root.appendChild(grid);
+        // Add floating effect hooks
+        document.querySelectorAll('.project-card').forEach((el,i)=>{ if(i%2===0) el.classList.add('float-slow'); else el.style.animationDuration='7s' });
+      }
+
+      // Try the recommended backend feed first
+      fetch('/api/youtube').then(r=>r.json()).then(data=>{
+        if(Array.isArray(data)) renderGrid(data); else renderEmpty();
+      }).catch(()=>{
+        // fallback to bundled placeholder data
+        fetch('/data/videos.json').then(r=>r.json()).then(obj=>{
+          if(Array.isArray(obj) && obj.length>0) renderGrid(obj); else renderEmpty();
+        }).catch(()=>{
+          renderEmpty();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
