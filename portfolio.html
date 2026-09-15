@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>NOTXMG — Portfolio</title>
+  <meta name="description" content="NOTXMG portfolio — Projects and YouTube. Floating on dark water aesthetic.">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="theme-dark">
+  <header class="site-header">
+    <div class="container nav-row">
+      <a class="logo" href="/index.html">NOTXMG</a>
+      <nav class="nav">
+        <a href="/index.html">Home</a>
+        <a href="/projects.html">Projects</a>
+        <a href="/youtube.html">YouTube</a>
+      </nav>
+      <button class="nav-toggle" aria-label="Open menu">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero small">
+      <div class="water-surface"></div>
+      <div class="container hero-inner">
+        <h1 class="title-animate">MY PORTFOLIO</h1>
+        <p class="subtitle">Select a channel to explore</p>
+      </div>
+    </section>
+
+    <section class="portfolio container">
+      <div class="choices">
+        <a class="choice-card" href="/projects.html" role="button" aria-label="Open Projects">
+          <div class="choice-inner">
+            <h2>PROJECTS</h2>
+            <p>Production-ready projects & game-facing tooling.</p>
+            <span class="kbd">Open</span>
+          </div>
+        </a>
+
+        <a class="choice-card" href="/youtube.html" role="button" aria-label="Open YouTube">
+          <div class="choice-inner">
+            <h2>YOUTUBE</h2>
+            <p>Channel feed, Videos & Shorts — auto-updating.</p>
+            <span class="kbd">Open</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="portfolio-note">
+        <p>These panels float gently and respond to cursor movement. Tap to open the selected channel.</p>
+      </div>
+    </section>
+
+    <section class="contact container">
+      <h2>Contact</h2>
+      <p class="muted">For business inquiries, collaborations or just to say hi — reach me on social or email.</p>
+      <div class="contact-row">
+        <a class="social" href="https://twitter.com/" target="_blank" rel="noopener">Twitter</a>
+        <a class="social" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+        <a class="social" href="mailto:you@example.com">Email</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year-portfolio"></span> NOTXMG</p>
+      <nav class="footer-nav">
+        <a href="/index.html">Home</a>
+        <a href="/projects.html">Projects</a>
+        <a href="/youtube.html">YouTube</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="/script.js" defer></script>
+</body>
+</html>
