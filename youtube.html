@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>NOTXMG — YouTube</title>
-  <meta name="description" content="NOTXMG YouTube feed — latest videos and shorts (lazy-loaded).">
+  <meta name="description" content="Watch NOTXMG Minecraft videos, Shorts and cinematic gaming content.">
   <link rel="stylesheet" href="/style.css">
 </head>
-<body class="theme-dark">
+<body class="theme-dark youtube-page">
   <header class="site-header">
     <div class="container nav-row">
       <a class="logo" href="/index.html">NOTXMG</a>
@@ -15,25 +15,83 @@
         <a href="/index.html">Home</a>
         <a href="/portfolio.html">Portfolio</a>
         <a href="/projects.html">Projects</a>
+        <a class="active" href="/youtube.html">YouTube</a>
       </nav>
       <button class="nav-toggle" aria-label="Open menu">☰</button>
     </div>
   </header>
 
   <main>
-    <section class="hero small">
+    <section class="yt-hero">
       <div class="water-surface"></div>
-      <div class="container hero-inner">
-        <h1 class="title-animate">NOTXMG — YouTube</h1>
-        <p class="subtitle">Channel feed and Shorts — lazy-loaded. <a href="https://youtube.com/@notx_mg" target="_blank" rel="noopener">Visit channel</a></p>
+      <div class="container yt-hero-inner">
+        <div class="yt-badge">● YOUTUBE CHANNEL</div>
+        <h1>WATCH<br><span>NOTXMG.</span></h1>
+        <p>My Minecraft stories, edits, Shorts and cinematic gaming content — all in one place.</p>
+        <div class="cta-row">
+          <a class="btn yt-primary" href="https://www.youtube.com/@notx_mg" target="_blank" rel="noopener">Visit Channel ↗</a>
+          <a class="btn ghost" href="#latest">Latest Videos ↓</a>
+        </div>
       </div>
     </section>
 
-    <section class="container youtube-section">
-      <div id="youtube-root">
-        <p class="muted">Loading videos…</p>
+    <section class="container yt-channel-card">
+      <div class="yt-channel-avatar">N</div>
+      <div class="yt-channel-info">
+        <span class="muted small">CREATOR CHANNEL</span>
+        <h2>NOTXMG</h2>
+        <p class="muted">Minecraft creator · Gaming · Stories · Shorts</p>
       </div>
-      <p class="muted small">Videos are loaded lazily. The site is ready to be wired to the YouTube Data API later (see README).</p>
+      <a class="btn small" href="https://www.youtube.com/@notx_mg" target="_blank" rel="noopener">Subscribe ↗</a>
+    </section>
+
+    <section class="container yt-feature">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">FEATURED</span>
+          <h2>THE CHANNEL</h2>
+        </div>
+        <span class="section-line"></span>
+      </div>
+      <div class="yt-feature-grid">
+        <div class="yt-feature-copy">
+          <span class="yt-number">01</span>
+          <h3>Minecraft.<br>But cinematic.</h3>
+          <p>Gameplay, stories, edits and creator projects built around the NOTXMG style.</p>
+          <a class="text-link" href="https://www.youtube.com/@notx_mg" target="_blank" rel="noopener">Explore the channel →</a>
+        </div>
+        <div class="yt-visual">
+          <div class="yt-play-ring">▶</div>
+          <div class="yt-visual-text">NOTXMG<br><small>WATCH NOW</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="latest" class="container youtube-section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">LATEST FROM NOTXMG</span>
+          <h2>VIDEOS & SHORTS</h2>
+        </div>
+        <a class="text-link" href="https://www.youtube.com/@notx_mg/videos" target="_blank" rel="noopener">See all ↗</a>
+      </div>
+
+      <div id="youtube-root">
+        <div class="yt-loading">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <div class="yt-empty-note">
+        <p class="muted small">Add your real YouTube video IDs to <code>/data/videos.json</code> and this section will automatically display them here.</p>
+      </div>
+    </section>
+
+    <section class="container yt-cta">
+      <span class="eyebrow">READY?</span>
+      <h2>GO WATCH.</h2>
+      <p class="muted">New videos, Shorts and Minecraft content on the channel.</p>
+      <a class="btn" href="https://www.youtube.com/@notx_mg" target="_blank" rel="noopener">Open YouTube Channel ↗</a>
     </section>
   </main>
 
@@ -42,86 +100,86 @@
       <p>© <span id="year-youtube"></span> NOTXMG</p>
       <nav class="footer-nav">
         <a href="/index.html">Home</a>
-        <a href="/portfolio.html">Portfolio</a>
-        <a href="/projects.html">Projects</a>
+        <a href="/portfolio.html">Projects</a>
+        <a href="/youtube.html">YouTube</a>
       </nav>
     </div>
   </footer>
 
   <script src="/script.js" defer></script>
   <script>
-    // Client-side data loader — attempts a modular feed endpoint first, then a local placeholder.
     (function(){
       const root = document.getElementById('youtube-root');
-      const renderEmpty = () => {
-        root.innerHTML = '<div class="center muted small">No videos available. Connect a YouTube data source or add items to <code>/data/videos.json</code>.</div>';
+
+      function empty(){
+        root.innerHTML =
+          '<div class="yt-no-videos"><div class="yt-no-icon">▶</div><h3>Videos coming soon.</h3><p>Add real uploads to <code>/data/videos.json</code> to show them here.</p></div>';
       }
 
-      function renderGrid(videos){
-        if(!videos || videos.length===0) return renderEmpty();
-        const grid = document.createElement('div');
-        grid.className = 'projects-grid';
-        videos.forEach(v => {
-          const card = document.createElement('article');
-          card.className = 'project-card youtube-card parallax';
+      function render(videos){
+        if(!Array.isArray(videos) || !videos.length){ empty(); return; }
 
-          const thumbWrap = document.createElement('div');
-          thumbWrap.className = 'project-media';
+        const grid = document.createElement('div');
+        grid.className = 'yt-video-grid';
+
+        videos.forEach((v, index) => {
+          if(!v.videoId) return;
+
+          const card = document.createElement('article');
+          card.className = 'yt-video-card';
+
+          const media = document.createElement('a');
+          media.className = 'yt-thumb';
+          media.href = 'https://www.youtube.com/watch?v=' + encodeURIComponent(v.videoId);
+          media.target = '_blank';
+          media.rel = 'noopener';
+
           const img = document.createElement('img');
-          img.alt = v.title || 'YouTube video';
+          img.src = v.thumbnail || ('https://i.ytimg.com/vi/' + v.videoId + '/hqdefault.jpg');
+          img.alt = v.title || 'NOTXMG YouTube video';
           img.loading = 'lazy';
-          img.src = v.thumbnail || ('https://i.ytimg.com/vi/'+(v.videoId||'')+'/hqdefault.jpg');
-          thumbWrap.appendChild(img);
+
+          const play = document.createElement('span');
+          play.className = 'yt-thumb-play';
+          play.textContent = '▶';
+
+          media.appendChild(img);
+          media.appendChild(play);
 
           const body = document.createElement('div');
-          body.className = 'project-body';
-          const h3 = document.createElement('h3');
-          h3.textContent = v.title || 'Untitled';
-          const p = document.createElement('p');
-          p.className = 'muted';
-          p.textContent = v.publishedAt ? new Date(v.publishedAt).toLocaleString() : '';
+          body.className = 'yt-video-body';
 
-          const actions = document.createElement('div');
-          actions.className = 'project-actions';
-          const play = document.createElement('button');
-          play.className = 'btn';
-          play.textContent = 'Play';
-          play.addEventListener('click', () => {
-            // Replace thumbnail with official YouTube embed (lazy load)
-            const iframe = document.createElement('iframe');
-            iframe.width = '100%';
-            iframe.height = '360';
-            iframe.src = 'https://www.youtube.com/embed/'+v.videoId+'?rel=0&modestbranding=1';
-            iframe.frameBorder = '0';
-            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-            iframe.allowFullscreen = true;
-            thumbWrap.innerHTML = '';
-            thumbWrap.appendChild(iframe);
-          });
+          const type = document.createElement('span');
+          type.className = 'eyebrow';
+          type.textContent = v.type || 'VIDEO';
 
-          actions.appendChild(play);
-          body.appendChild(h3); body.appendChild(p); body.appendChild(actions);
+          const title = document.createElement('h3');
+          title.textContent = v.title || 'NOTXMG Upload';
 
-          card.appendChild(thumbWrap); card.appendChild(body);
+          const date = document.createElement('p');
+          date.className = 'muted small';
+          date.textContent = v.publishedAt
+            ? new Date(v.publishedAt).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})
+            : 'NOTXMG';
+
+          body.appendChild(type);
+          body.appendChild(title);
+          body.appendChild(date);
+
+          card.appendChild(media);
+          card.appendChild(body);
           grid.appendChild(card);
         });
+
+        if(!grid.children.length){ empty(); return; }
         root.innerHTML = '';
         root.appendChild(grid);
-        // Add floating effect hooks
-        document.querySelectorAll('.project-card').forEach((el,i)=>{ if(i%2===0) el.classList.add('float-slow'); else el.style.animationDuration='7s' });
       }
 
-      // Try the recommended backend feed first
-      fetch('/api/youtube').then(r=>r.json()).then(data=>{
-        if(Array.isArray(data)) renderGrid(data); else renderEmpty();
-      }).catch(()=>{
-        // fallback to bundled placeholder data
-        fetch('/data/videos.json').then(r=>r.json()).then(obj=>{
-          if(Array.isArray(obj) && obj.length>0) renderGrid(obj); else renderEmpty();
-        }).catch(()=>{
-          renderEmpty();
-        });
-      });
+      fetch('/data/videos.json', {cache:'no-store'})
+        .then(r => r.ok ? r.json() : [])
+        .then(render)
+        .catch(empty);
     })();
   </script>
 </body>
